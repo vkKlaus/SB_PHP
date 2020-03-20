@@ -13,7 +13,8 @@
         <li><a href="task3.php">Задание 3</a></li>
         <li><a href="task4.php">Задание 4</a></li>
         <li><a href="task5.php">Задание 5</a></li>
-        <li><a href="task6.php">Задание 6</a></li>
+        <li><a href="task6.php">Задание 6 (разбор строки)</a></li>
+        <li><a href="task7.php">Задание 6 (остаток от деления)</a></li>
     </ul>
 </body>
 </html>
