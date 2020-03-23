@@ -2,19 +2,18 @@
 
 function findUser($login, $password)
 {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/db/users.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/db/usersPs.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/db/users.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/db/usersPs.php';
 
     $keyUser = array_search($login, $users);
 
     if ($keyUser === false) {
-        var_dump($keyUser);
-        return [false, 'пользователь не найден'];
+        return 0;
     }
 
     if ($userPaswords[$keyUser] !== $password) {
-        return [false, 'не правильный пароль'];
+        return 1;
     }
 
-    return [true, 'пользователь с id ' . $keyUser];
+    return 2;
 }

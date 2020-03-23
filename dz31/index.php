@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link href="/css/styles.css" rel="stylesheet" />
+  <link href="css/styles.css" rel="stylesheet" />
   <title>Project - ведение списков</title>
 </head>
 
@@ -11,6 +11,9 @@
 $login = '';
 $password = '';
 $resAuto = [false, ''];
+$error = false;
+$findUser = false;
+$txt = '';
 
 $openWindowAuto = false;
 if (isset($_GET['login']) && $_GET['login'] == 'yes') {
@@ -20,9 +23,27 @@ if (isset($_GET['login']) && $_GET['login'] == 'yes') {
 if (isset($_POST['enter'])) {
   $login = $_POST['login'];
   $password = $_POST['password'];
-  require_once $_SERVER['DOCUMENT_ROOT'].'/findUser.php';
-  $resAuto = findUser($login, $password);
-  $openWindowAuto = !$resAuto[0];
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/findUser.php';
+
+  switch (findUser($login, $password)) {
+    case 0: {
+        $error = true;
+        $txt = 'пользователь не найден';
+        break;
+      }
+    case 1: {
+        $error = true;
+        $txt = 'не верный пароль';
+        break;
+      }
+    default: {
+        $findUser = true;
+        $txt = 'пользователь: ' . $login;
+        break;
+      }
+  };
+
+  $openWindowAuto = $error;
 }
 ?>
 
@@ -87,8 +108,8 @@ if (isset($_POST['enter'])) {
                 </tr>
                 <tr>
                   <td><input type="submit" value="Войти" name="enter" />
-                    <?php if (!$resAuto[0]) : ?>
-                      <p class="errorUser"><?= $resAuto[1] ?> </p>
+                    <?php if ($error) : ?>
+                      <p class="errorUser"><?= $txt ?> </p>
                     <?php endif; ?></td>
                 </tr>
               </table>
@@ -98,8 +119,8 @@ if (isset($_POST['enter'])) {
             </a>
           </div>
         <?php else : ?>
-          <?php if ($resAuto[0]) : ?>
-            <p class="findUser"><?= $resAuto[1] ?> </p>
+          <?php if ($findUser) : ?>
+            <p class="findUser"><?= $txt ?> </p>
             <hr>
           <?php endif; ?>
           <a href="/?login=yes">
