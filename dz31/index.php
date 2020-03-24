@@ -1,4 +1,24 @@
-﻿<!DOCTYPE html>
+﻿<?php
+
+$login = '';
+$password = '';
+$error = -1;
+
+$openWindowAuto = isset($_GET['login']) && $_GET['login'] == 'yes';
+
+if (isset($_POST['enter'])) {
+    $login = $_POST['login'];
+    $password = $_POST['password'];
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/findUser.php';
+
+    $error = findUser($login, $password);
+  
+    $openWindowAuto = $error == 1 || $error == 2;
+}
+?>
+
+
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -6,49 +26,6 @@
   <link href="css/styles.css" rel="stylesheet" />
   <title>Project - ведение списков</title>
 </head>
-
-<?php
-$login = '';
-$password = '';
-$resAuto = [false, ''];
-$error = false;
-$findUser = false;
-$txt = '';
-
-$openWindowAuto = false;
-if (isset($_GET['login']) && $_GET['login'] == 'yes') {
-  $openWindowAuto = true;
-}
-
-if (isset($_POST['enter'])) {
-  $login = $_POST['login'];
-  $password = $_POST['password'];
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/findUser.php';
-
-  switch (findUser($login, $password)) {
-    case 0: {
-        $error = true;
-        $txt = 'пользователь не найден';
-        break;
-      }
-    case 1: {
-        $error = true;
-        $txt = 'не верный пароль';
-        break;
-      }
-    default: {
-        $findUser = true;
-        $txt = 'пользователь: ' . $login;
-        break;
-      }
-  };
-
-  $openWindowAuto = $error;
-}
-?>
-
-
-
 <body>
   <div class="header">
     <div class="logo">
@@ -79,7 +56,7 @@ if (isset($_POST['enter'])) {
       </td>
 
       <td class="right-collum-index">
-        <?php if ($openWindowAuto) : ?>
+        <?php if ($openWindowAuto): ?>
           <div class="project-folders-menu">
             <ul class="project-folders-v">
               <li class="project-folders-v-active">
@@ -108,9 +85,13 @@ if (isset($_POST['enter'])) {
                 </tr>
                 <tr>
                   <td><input type="submit" value="Войти" name="enter" />
-                    <?php if ($error) : ?>
-                      <p class="errorUser"><?= $txt ?> </p>
-                    <?php endif; ?></td>
+                    <?php if ($error == 1) {
+                        require_once $_SERVER['DOCUMENT_ROOT'] .
+                            '/include/errorUser.php';
+                    } elseif ($error == 2) {
+                        require_once $_SERVER['DOCUMENT_ROOT'] .
+                            '/include/errorPassword.php';
+                    } ?></td>
                 </tr>
               </table>
             </form>
@@ -118,11 +99,12 @@ if (isset($_POST['enter'])) {
               <div class="winAuto">закрыть окно авторизации</div>
             </a>
           </div>
-        <?php else : ?>
-          <?php if ($findUser) : ?>
-            <p class="findUser"><?= $txt ?> </p>
-            <hr>
-          <?php endif; ?>
+        <?php else: ?>
+          <?php if ($error == 0) {
+              require_once  $_SERVER['DOCUMENT_ROOT'] . '/include/success.php';
+          } ?>
+         
+         
           <a href="/?login=yes">
             <div class="winAuto">
               пройти авторизацию

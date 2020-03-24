@@ -8,12 +8,12 @@ function findUser($login, $password)
     $keyUser = array_search($login, $users);
 
     if ($keyUser === false) {
-        return 0;
-    }
-
-    if ($userPaswords[$keyUser] !== $password) {
         return 1;
     }
 
-    return 2;
+    if ($userPaswords[$keyUser] !== $password) {
+        return 2;
+    }
+
+    return 0;
 }
