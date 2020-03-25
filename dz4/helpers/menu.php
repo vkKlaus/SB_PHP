@@ -1,19 +1,5 @@
  <?php
  /**
-  * функция определения активного пункта меню
-  * @param string $element пункт меню
-  *
-  * @return string  строка для формирования класса
-  */
- function activePoint(string $element): string
- {
-      
-    return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) == $element
-         ? 'active'
-         : '';
- }
-
- /**
   * функция формирования меню
   * @param string $typeSort вид сортировки (asc - по возрвстанию, dsc - по убыванию)
   * @param string $typeMenu вид меню (используется для формирования класса стиля)
@@ -59,7 +45,7 @@
              '<div class="' .
              $typeMenu .
              '-menu-element ' . //добавляем название
-             activePoint($element['path']) . //проверяем активный пункт меню
+             activePoint($element['path'],'active') . //проверяем активный пункт меню
              '">' .
              cutString($element['title'], 15) . //обрезаем заголовок // обрезаем если более 15 символов
              ' </div>' . //закрываем название
