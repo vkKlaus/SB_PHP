@@ -1,6 +1,7 @@
 <?php
-
-mb_internal_encoding("UTF-8");
+/**
+ * массив с пунктами меню, адресами и позициями
+ */
 
 $mainMenu = [
     [
@@ -10,22 +11,24 @@ $mainMenu = [
     ],
     [
         'title' => 'О нас',
-        'path' => '/route/about',
+        'path' => '/route/about/',
         'sort' => 1,
     ],
     [
-        'title' => 'Контакты',
-        'path' => '/route/contact',
+        'title' => 'Контакты для связи',
+        'path' => '/route/contact/',
         'sort' => 4,
     ],
     [
         'title' => 'Новости',
-        'path' => '/route/news',
+        'path' => '/route/news/',
         'sort' => 2,
     ],
     [
         'title' => 'Каталог',
-        'path' => '/route/catalog',
+        'path' => '/route/catalog/',
         'sort' => 3,
     ],
 ];
+
+

@@ -1,10 +1,11 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
-?>
+<!-- подключаем header -->
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/header.php'; ?>
 
+<!-- основной блок -->
 <main>
-    <h1>Страница "Каталог"</h1>
+    <!-- вызываем процедуру формирования страницы передаем заголовок -->
+    <?php viewTxt('Страница "Каталог"</h1>') ?>
 </main>
 
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/views/footer.php';
+<!-- подключаем footer -->
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/footer.php';

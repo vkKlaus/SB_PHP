@@ -1,5 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/views/menu.php';
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
+
 ?>
 
 <!DOCTYPE html>
@@ -14,19 +18,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/views/menu.php';
 
 <body>
     <header>
+        <!-- выводим логотип -->
         <a href="/"><img src="/img/logo.png" alt="logo"></a>
-        <ul class="horizontal-menu">
-            <?php
-            foreach ($mainMenu as $element) { ?>
-                <li>
-                    <a href="<?= $element['path'] ?>" class="horizontal-menu-link">
-                        <div class="horizontal-menu-element">
-                            <?= (mb_strlen($element['title']) <= 15 ?
-                                $element['title'] :
-                                mb_substr($element['title'], 0, 12) . '...') ?>
-                        </div>
-                    </a>
-                </li>
-            <?php } ?>
-        </ul>
+        <!-- выводим горизонтальное меню сформированное по возрастанию пунктов -->
+       <?= createMenu('asc','horizontal') ?>
     </header>
