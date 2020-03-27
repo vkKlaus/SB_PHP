@@ -1,32 +1,22 @@
  <?php
  /**
   * функция формирования меню
+  * @param array $$mainMenu массив с данными меню
   * @param string $typeSort вид сортировки (asc - по возрвстанию, dsc - по убыванию)
   * @param string $typeMenu вид меню (используется для формирования класса стиля)
-  *
   * @return string $htmlMenu - строка html-кода
   */
 
  function createMenu(
+     array $mainMenu,
      string $typeSort = 'asc',
      string $typeMenu = 'horizontal'
  ): string {
      //подключаем файл с массивом меню
-     require $_SERVER['DOCUMENT_ROOT'] . '/db/main_menu.php';
+    
 
-     mb_internal_encoding('UTF-8'); //указываем кодировку для сортировки и обрезания
      //сортируем меню
-     usort(
-         $mainMenu,
-
-         $typeSort == 'asc'
-             ? function ($a, $b) {
-                 return $a['sort'] > $b['sort']; //сортировка по возрастанию
-             }
-             : function ($a, $b) {
-                 return $b['sort'] > $a['sort']; //сортировка по убыванию
-             }
-     );
+    $mainMenu = sortArray($mainMenu,$typeSort);
 
      // $htmlMenu - строка с html-кодом
      $htmlMenu = '<ul class="' . $typeMenu . '-menu">'; //class формируется в зависимости от типа меню
@@ -37,8 +27,7 @@
              //пункт списка - раздел меню
              ' 
                 <li>       
-                    <a href="' .
-             $element['path'] .
+                    <a href="' . $element['path'] .
              '" class="' .
              $typeMenu .
              '-menu-link"> ' . //добавляем ссылку

@@ -1,5 +1,6 @@
 <?php
 
+require $_SERVER['DOCUMENT_ROOT'] . '/db/main_menu.php'; //данные меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
@@ -21,5 +22,5 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем
         <!-- выводим логотип -->
         <a href="/"><img src="/img/logo.png" alt="logo"></a>
         <!-- выводим горизонтальное меню сформированное по возрастанию пунктов -->
-       <?= createMenu('asc','horizontal') ?>
+       <?= createMenu($mainMenu,'asc','horizontal') ?>
     </header>
