@@ -5,6 +5,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
 
+
 ?>
 
 <!DOCTYPE html>

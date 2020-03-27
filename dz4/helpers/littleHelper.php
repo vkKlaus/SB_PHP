@@ -22,7 +22,7 @@ function cutString(string $element, int $numberOfSymbols): string
  */
 function activePoint(string $element, string $class): string
 {
-    return defineUrl() == $element
+    return isCurrentUrl($element)
         ? $class
         : '';
 }
@@ -34,10 +34,8 @@ function activePoint(string $element, string $class): string
  */
 function findPage($mainMenu): string
 {
-  
-
     foreach ($mainMenu as $value) {
-        if ($value['path'] == defineUrl()) {
+        if (isCurrentUrl($value['path'])) {
             return 'страница: ' . $value['title'];
         }
     }
@@ -52,6 +50,16 @@ function findPage($mainMenu): string
 function defineUrl() : string
 {
     return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+}
+
+ /**
+ * функция определения активного url
+ * @param string $url строка с адресом
+ * @return bool  результат ставнения адреса текущей станицы с переданным гкд
+  */
+function isCurrentUrl(string $url) : bool
+{
+    return $url == defineUrl();
 }
 
 /**

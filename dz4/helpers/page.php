@@ -11,5 +11,5 @@
 function viewTxt($mainMenu)
 {
     $pageTitle = findPage($mainMenu);
-    require $_SERVER['DOCUMENT_ROOT'] . '/helpers/templPage.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/template/templPage.php';
 }
