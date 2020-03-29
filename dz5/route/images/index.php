@@ -1,98 +1,89 @@
 <?php
+//подключаем header
+require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
 
-if (isset($_POST['loadImg'])) {
-    if (!empty($_FILES['img']['name'][0])) {
-        $dirUpload = $_SERVER['DOCUMENT_ROOT'] . '/img/bigImg/';
+$dirImg = $_SERVER['DOCUMENT_ROOT'] . '/img/bigImg/';
 
-        for ($i = 0; $i <= count($_FILES['img']['name']);$i++ ){
-            if  (empty($_FILES['img']['error'][$i])){
-                move_uploaded_file($_FILES['img']['tmp_name'][$i],$dirUpload . $_FILES['img']['name'][$i] );
+if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
+    $countFiles = $_POST['countFiles'] == 0 ? count($_FILES['img']['name']) : $_POST['countFiles'];
+    
+    for ($i = 0; $i < count($_FILES['img']['name']); $i++) {
+    
+        if (((bool) $_POST['onlyImg']) && strpos($_FILES['img']['type'][$i],'image') === false){
+            continue;
+        }
+
+        if (empty($_FILES['img']['error'][$i]) && ($_FILES['img']['size'][$i] <= ($_POST['volFiles']*1000000) || $_POST['volFiles'] == 0)) {
+            move_uploaded_file($_FILES['img']['tmp_name'][$i], $dirImg . $_FILES['img']['name'][$i]);
+       
+            if (--$countFiles <=0 ){
+                break;
             }
         }
     }
 } 
 
+elseif (isset($_POST['delImg']) && !empty($_POST['img']))
+{ 
+    foreach ($_POST['img'] as $item) {
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $item)) {
+            unlink($_SERVER['DOCUMENT_ROOT'] . $item);
+        }
+    }
+}
 ?>
-
-
-<!-- подключаем header -->
-<?php require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php'; ?>
-
 
 <!-- основной блок -->
 <main>
     <!-- вызываем процедуру формирования страницы передаем заголовок -->
     <?php viewTxt($mainMenu); ?>
 
-    <form method="POST" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data" class="form">
+    <form method="POST" action="" enctype="multipart/form-data" class="form">
         <fieldset class="form-container">
             <legend> Загрузите файл(ы) в галерею</legend>
-            
-            <input type="file" name="img[]" accept="image/*" multiple>
-            
-            <div class="form-container-button">
-                <input type="submit" value="Загрузить" name = "loadImg"> 
+
+            <div class="form-field">
+                <label>
+                    макс.объем 1-го файла (mB)<br>
+                    <input type="text" name="volFiles" value=0><br>
+                    0 - не проверяем
+                </label>
+                <label>
+                    грузим файлов <br>
+                    <input type="number" name="countFiles" value=0><br>
+                    0 - все что выбрали
+                </label>
+
+                <label>
+                    только картинки <br>
+                    <input type="checkbox" class="check" value="true" name="onlyImg" checked>
+                </label>
+
+                <input type="file" name="img[]" accept="image/*" multiple>
+
+                <input type="submit" value="Загрузить" name="loadImg">
             </div>
         </fieldset>
     </form>
 
-    <div class="documents">
-        <?php 
-        
-        $arrImg = (scandir($_SERVER['DOCUMENT_ROOT'] . '/img/bigImg'));
-            
-        unset($arrImg[0],$arrImg[1]);
-                
-        foreach ($arrImg as $img){
-            require $_SERVER['DOCUMENT_ROOT'] . '/template/templImg.php'; 
-        }
+    <?php if (scandDirFile($dirImg)) { ?>
+        <form class="documents" method="POST" action="">
+            <input type="submit" value="Удалить отмеченные" name="delImg">
 
-        ?>
-    </div>
-
+            <div class="documents">
+                <?php
+                    $arrImg = scandir($dirImg);
+                    delRooDir($arrImg);
+                    foreach ($arrImg as $img) {
+                        if (strpos(mime_content_type($dirImg . $img), 'image') === 0) {
+                            require $_SERVER['DOCUMENT_ROOT'] . '/template/templImg.php';
+                        }
+                    }
+                ?>
+            </div>
+        </form>
+    <?php } ?>
 </main>
-
-
 
 <!-- подключаем footer -->
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/views/footer.php';
-
-
-//   <div class="documents">
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc1.jpg">
-//                             <img src="img/doc1.jpg" alt="img1" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc2.jpg">
-//                             <img src="img/doc2.jpg" alt="img2" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc3.jpg">
-//                             <img src="img/doc3.jpg" alt="img3" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc4.jpg">
-//                             <img src="img/doc4.jpg" alt="img4" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc5.jpg">
-//                             <img src="img/doc5.jpg" alt="img5" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc6.jpg">
-//                             <img src="img/doc6.jpg" alt="img6" class="docsElement">
-//                         </a>
-//                     </div>
-//                     <div class="docsBox">
-//                         <a data-fancybox="gallery" href="img/doc7.jpg">
-//                             <img src="img/doc7.jpg" alt="img7" class="docsElement">
-//                         </a>
-//                     </div>
-
-//                 </div>

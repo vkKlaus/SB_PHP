@@ -24,5 +24,5 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем
         <!-- выводим логотип -->
         <a href="/"><img src="/img/logo.png" alt="logo"></a>
         <!-- выводим горизонтальное меню сформированное по возрастанию пунктов -->
-       <?php createMenu($mainMenu,'asc','horizontal') ?>
+        <?php createMenu($mainMenu, 'asc', 'horizontal') ?>
     </header>
