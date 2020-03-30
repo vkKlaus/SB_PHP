@@ -15,8 +15,17 @@ header {
   top: 0;
   background-color: #222;
   display: flex;
-  justify-content: start;
-  padding: 15px;
+  justify-content: space-around;
+}
+
+.left-header {
+  flex-grow: 1;
+  margin: 10px;
+  display: flex;
+}
+
+.right-header {
+  margin: 10px;
 }
 
 .horizontal-menu,
@@ -26,7 +35,7 @@ header {
   align-items: center;
   font-size: 16px;
   list-style-type: none;
-  margin-left: 5%;
+  margin-left: 20px;
 }
 
 .horizontal-menu-link,
@@ -72,12 +81,51 @@ footer {
   padding-bottom: 5px;
 }
 
+.enter-menu {
+  margin-left: 10%;
+}
+.enter-menu-element {
+  padding: 5px;
+  /* border: 1px solid #999; */
+  width: 10%;
+  text-align: center;
+  margin: 0;
+}
+
+.enter-menu-title {
+  color: black;
+}
+
+.enter-form {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.enter-field {
+  width: 20vw;
+  margin-top: 10px;
+}
+
+.enter-label {
+  margin-top: 15px;
+}
+
+.enter-button {
+  margin-top: 35px;
+  width: 22vw;
+}
+
 .active {
   color: red;
   font-weight: bold;
   text-decoration: underline;
 }
 
+.active-enter {
+  font-weight: bold;
+  border-bottom: 4px solid rgb(0, 0, 104);
+}
 .page {
   margin-left: 5%;
   margin-right: 5%;
@@ -140,7 +188,31 @@ input {
   padding: 5px 15px;
 }
 
-.check{
-  transform:scale(2);
+.check {
+  transform: scale(2);
   margin: 15px;
+}
+
+.error-title {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.error-load {
+  color: red;
+  text-align: center;
+}
+
+.title-enter {
+  margin-top: 20px;
+  font-weight: bold;
+  color: black;
+  border-bottom: 1px solid #999;
+  width: 40vw;
+  text-align: center;
+}
+
+.error-enter {
+  color: red;
 }
