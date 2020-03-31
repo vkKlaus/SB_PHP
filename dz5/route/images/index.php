@@ -10,14 +10,28 @@ $onlyImg = true;
 
 if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
 
-    $errorLoad = false;
-    $errorCount = '';
-    $errorType = '';
+    //проверяем количество файлов к загрузке
+    if ($_POST['countFiles'] < count($_FILES['img']['name']) && $_POST['countFiles'] != 0) {
 
-    //проверяем возможность загрузки
-    $canLoad = checlLoad($_POST['countFiles'], (bool) $_POST['onlyImg'], $_FILES['img']['type']);
+        $errorCount = 'Для загрузки разрешено ' . $_POST['countFiles'] . ' фл. Выбрано ' . count($_FILES['img']['name']);
+    };
 
-    if ($canLoad['load']) {
+    //проверяем тип файлов к загрузке
+    if ((bool) $_POST['onlyImg']) {
+        $arrayType = array_filter(
+            $_FILES['img']['type'],
+            function ($fileType) {
+                return  mb_strpos($fileType, 'image') === false;
+            }
+        );
+
+        if (count($arrayType) != 0) {
+            $errorType = 'К загрузке разрешены только картинки. Выбрано не картинок: ' . count($arrayType);
+        }
+    };
+
+    //если не ошибок - грузим
+    if (empty($errorCount) && empty($errorType)) {
 
         for ($i = 0; $i < count($_FILES['img']['name']); $i++) {
             if (empty($_FILES['img']['error'][$i]) && ($_FILES['img']['size'][$i] <= ($_POST['volFiles'] * 1000000) || $_POST['volFiles'] == 0)) {
@@ -25,14 +39,6 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
             }
         }
     } else {
-        $errorLoad = true;
-        if ($canLoad['errorCount'] != 0) {
-            $errorCount = 'Для загрузки разрешено ' . $_POST['countFiles'] . ' фл. Выбрано ' . count($_FILES['img']['name']);
-        }
-
-        if ($canLoad['errorType'] != 0) {
-            $errorType = 'К загрузке разрешены только картинки. Выбрано не картинок: ' . $canLoad['errorType'];
-        }
 
         $volFiles = $_POST['volFiles'];
         $countFiles = $_POST['countFiles'];
@@ -74,15 +80,15 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
                     <input type="checkbox" class="check" value="<?= $onlyImg ? 'true' : 'false' ?>" name="onlyImg" <?= $onlyImg ? 'checked' : '' ?>>
                 </label>
 
-                <input type="file" name="img[]" accept="image/*" multiple>
+                <input type="file" name="img[]" accept="image/jpeg, image/jpg, image/png" multiple>
 
                 <input type="submit" value="Загрузить" name="loadImg">
             </div>
         </fieldset>
     </form>
 
-
-    <?php if ($errorLoad) { ?>
+    <!--  ecли ошибки - выводим сообщение -->
+    <?php if (!empty($errorCount) || !empty($errorType)) { ?>
         <h3 class="error-title">ОШИБКА:</h3>
 
         <p class="error-load"> <?= ($errorCount) ?></p> <br>
@@ -92,7 +98,7 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
 
 
 
-    <?php if (scandDirFile($dirImg)) { ?>
+    <?php if (scanDirFile($dirImg)) { ?>
         <form class="documents" method="POST">
             <input type="submit" value="Удалить отмеченные" name="delImg">
 
@@ -103,7 +109,7 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
                 $arrImg = delRootDir($arrImg);
 
                 foreach ($arrImg as $img) {
-                    if (strpos(mime_content_type($dirImg . $img), 'image') === 0) {
+                    if (mb_strpos(mime_content_type($dirImg . $img), 'image') === 0) {
                         require $_SERVER['DOCUMENT_ROOT'] . '/template/templImg.php';
                     }
                 }

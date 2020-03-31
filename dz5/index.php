@@ -7,8 +7,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
 <main>
     <!-- вызываем процедуру формирования страницы передаем заголовок -->
     <?php viewTxt($mainMenu); ?>
+</main>
 
-
-
-    < </main> <!-- подключаем footer -->
-        <?php require $_SERVER['DOCUMENT_ROOT'] . '/views/footer.php';
+<!-- подключаем footer -->
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/views/footer.php';

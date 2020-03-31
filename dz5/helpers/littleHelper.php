@@ -90,7 +90,7 @@ function sortArray($mainMenu, $typeSort): array
  * @param string $dir - путь к каталогу для проверки
  * @return bool  переменая наличия файлов в существующем (созданном) каталоге
  */
-function scandDirFile(string $dir): bool
+function scanDirFile(string $dir): bool
 {
 
     $existFiles = true; //флаг заполненности директории (есть файлы изображений)
@@ -114,7 +114,7 @@ function scandDirFile(string $dir): bool
             $arrDirImg = array_filter(
                 $arrDirImg,
                 function ($element) {
-                    return  strpos(mime_content_type($dir . $element), 'image') === 0;
+                    return   mb_strpos(mime_content_type($dir . $element), 'image') === 0;
                 }
             );
 
@@ -160,13 +160,13 @@ function checlLoad(int $countFiles, bool $onlyImg, array $typeFiles): array
     if ($countFiles < count($typeFiles) && $countFiles != 0) {
         $result['load'] = false;
         $result['errorCount'] = count($typeFiles) - $countFiles;
-    };
+    }
 
     if ($onlyImg) {
         $arrayType = array_filter(
             $typeFiles,
             function ($fileType) {
-                return strpos($fileType, 'image') === false;
+                return  mb_strpos($fileType, 'image') === false;
             }
         );
 
@@ -174,7 +174,8 @@ function checlLoad(int $countFiles, bool $onlyImg, array $typeFiles): array
             $result['load'] = false;
             $result['errorType'] = count($arrayType);
         }
-    };
+    }
+
     return $result;
 }
 
