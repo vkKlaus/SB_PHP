@@ -2,6 +2,7 @@
 
     <label class="enter-label" for="login-id">Ваш e-mail:</label>
 
+    <?php var_dump($_COOKIE) ?>
     <input type="text" name="login" value="<?= $login ?>" id="login-id" class="enter-field">
 
     <label class="enter-label" for="password-id">Ваш пароль:</label>

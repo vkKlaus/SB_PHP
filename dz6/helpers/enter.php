@@ -27,10 +27,13 @@ if (empty($errorUser)) {
         $errorUser = 'Не правильный пароль. Вход воспрещен!';
     } else {
         $titleUser = 'Авторизация выполнена.';
-        $login = '';
+
+        $_SESSION['login'] = $login;
 
 
-        $root = $_SERVER['HTTP_ORIGIN'];
-        echo '<script>window.location.href = "' . $root . '"</script>';
+
+
+
+        require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
     }
 }

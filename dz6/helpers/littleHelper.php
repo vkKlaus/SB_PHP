@@ -92,39 +92,24 @@ function sortArray($mainMenu, $typeSort): array
  */
 function scanDirFile(string $dir): bool
 {
-
-    $existFiles = true; //флаг заполненности директории (есть файлы изображений)
-
     if (!file_exists($dir)) { //если директории нет, то создаем ее 
         mkdir($dir);
-        $existFiles = false; //директория пустая
-    } else {
-        $arrDirImg = scandir($dir); //директоря есть, но вдруг пустая
-
-        if (!$arrDirImg) {
-            $existFiles = false; //директория пустая
-        } else {                //директоря есть, и вроде не пустая
-
-            $arrDirImg = delRootDir($arrDirImg);     //удаляем (.) и (..)
-            foreach ($arrDirImg as $ind => $item) {
-                $arrDirImg[$ind] =  $dir . $arrDirImg[$ind]; //преобразуем имена файлов в полный путь
-            };
-
-            //фильтруем по mime (изображение)
-            $arrDirImg = array_filter(
-                $arrDirImg,
-                function ($element) {
-                    return   mb_strpos(mime_content_type($dir . $element), 'image') === 0;
-                }
-            );
-
-            if (count($arrDirImg) == 0) {
-                $existFiles = false;   //директория считается пустой (даже если там есть файл не изображений)
-            }
-        }
+        return false; //директория пустая - возращаем нет картинок
     }
 
-    return $existFiles;
+    $arrDirImg = delRootDir(scandir($dir)); //директоря есть, но вдруг пустая
+    if (!$arrDirImg) {
+        return false; //директория пустая - возращаем нет картинок
+    }
+
+    //директоря есть, и вроде не пустая
+    foreach ($arrDirImg as $ind => $item) {
+        if (mb_strpos(mime_content_type($dir . $arrDirImg[$ind]), 'image') !== false) {
+            return true;            //нашли картинку в директории - возращаем есть картина
+        }
+    };
+
+    return false; //директория не пустая, но картинок нет - возращаем нет картинок
 }
 
 /**
@@ -137,47 +122,11 @@ function delRootDir(array $arrayElements): array
     return  array_filter(
         $arrayElements,
         function ($element) {  //из массива файлов даляем (.) и (..)
-            return $element != '.' && $element != '..';
+            return (!in_array($element, ['.', '..']));
         }
     );
 }
 
-/**
- * функция проверки правильности загрузки
- * @param int  $countFiles - разрешенное к загрузке количество файлов 
- * @param bool  $onlyImg - разрешеннs к загрузке только картинки 
- * @param array  $typeFiles - количесво и тип загружаемых файлов 
- * @return array - массив ошибок
- */
-function checlLoad(int $countFiles, bool $onlyImg, array $typeFiles): array
-{
-    $result = [
-        'load' => true,
-        'errorCount' => 0,
-        'errorType' => 0
-    ];
-
-    if ($countFiles < count($typeFiles) && $countFiles != 0) {
-        $result['load'] = false;
-        $result['errorCount'] = count($typeFiles) - $countFiles;
-    }
-
-    if ($onlyImg) {
-        $arrayType = array_filter(
-            $typeFiles,
-            function ($fileType) {
-                return  mb_strpos($fileType, 'image') === false;
-            }
-        );
-
-        if (count($arrayType) != 0) {
-            $result['load'] = false;
-            $result['errorType'] = count($arrayType);
-        }
-    }
-
-    return $result;
-}
 
 /** функция проверки существования файла авторизации и пароля. если не - создаем
  * @param  
@@ -206,9 +155,7 @@ function existFileEnter()
  */
 function findUser(string $login, array $users): int
 {
-
     $ind = array_search($login, $users);
-
     return ($ind === false ? -1 :  $ind);
 }
 

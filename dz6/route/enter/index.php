@@ -1,8 +1,6 @@
-<!-- подключаем header -->
 <?php
 
 require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
-$_SESSION['pageEnter'] = '+';
 
 $autor = false;
 $regis = false;
@@ -11,21 +9,21 @@ $recov = false;
 switch ($_GET['enter']) {
     case 'autor':
         $autor = true;
-        $regis = false;
-        $recov = false;
         break;
     case 'regis':
-        $autor = false;
         $regis = true;
-        $recov = false;
         break;
     case 'recov':
-
-        $autor = false;
-        $regis = false;
         $recov = true;
         break;
+    case 'exit':
+        unset($_SESSION['login']);
+        setcookie('login', '', time() - 5);
+        require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
+        break;
 }
+
+
 
 switch ($_POST['enter']) {
     case 'Зарегистрироваться':
@@ -43,10 +41,6 @@ switch ($_POST['enter']) {
 
 <!-- основной блок -->
 <main class="enter-menu">
-    <?php
-    var_dump(session_id());
-    var_dump($_SESSION);
-    ?>
     <!-- меню -->
     <ul class="horizontal-menu">
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/template/enterMenu/templAutorization.php'; ?>

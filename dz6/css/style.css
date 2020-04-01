@@ -216,3 +216,15 @@ input {
 .error-enter {
   color: red;
 }
+
+.autor-yes,
+.autor-no {
+  text-align: center;
+}
+
+.autor-yes {
+  color: rgb(0, 145, 108);
+}
+.autor-no {
+  color: red;
+}

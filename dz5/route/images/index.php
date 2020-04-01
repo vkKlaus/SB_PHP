@@ -8,35 +8,62 @@ $volFiles = 0;
 $countFiles = 0;
 $onlyImg = true;
 
-if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
+
+$arrName = $_FILES['img']['name'];
+$arrType = $_FILES['img']['type'];
+$arrSize = $_FILES['img']['size'];
+$arrTmp = $_FILES['img']['tmp_name'];
+$arrError = $_FILES['img']['error'];
+
+$errorTitle = '';
+
+
+if (isset($_POST['loadImg']) && !empty($arrName[0])) {
 
     //проверяем количество файлов к загрузке
-    if ($_POST['countFiles'] < count($_FILES['img']['name']) && $_POST['countFiles'] != 0) {
+    if ($_POST['countFiles'] < count($arrName) && $_POST['countFiles'] != 0) {
 
-        $errorCount = 'Для загрузки разрешено ' . $_POST['countFiles'] . ' фл. Выбрано ' . count($_FILES['img']['name']);
+        $errorTitle .= 'Для загрузки разрешено ' . $_POST['countFiles']
+            . ' фл. Выбрано ' . count($arrName) . '<br>';
     };
 
     //проверяем тип файлов к загрузке
     if ((bool) $_POST['onlyImg']) {
-        $arrayType = array_filter(
-            $_FILES['img']['type'],
+        $arrayNoImg = array_filter(
+            $arrType,
             function ($fileType) {
                 return  mb_strpos($fileType, 'image') === false;
             }
         );
 
-        if (count($arrayType) != 0) {
-            $errorType = 'К загрузке разрешены только картинки. Выбрано не картинок: ' . count($arrayType);
+        if (count($arrayNoImg) != 0) {
+            $errorTitle .=  'К загрузке разрешены только картинки. 
+                            Выбрано не картинок: ' . count($arrayNoImg) . '<br>';
         }
     };
 
-    //если не ошибок - грузим
-    if (empty($errorCount) && empty($errorType)) {
-
-        for ($i = 0; $i < count($_FILES['img']['name']); $i++) {
-            if (empty($_FILES['img']['error'][$i]) && ($_FILES['img']['size'][$i] <= ($_POST['volFiles'] * 1000000) || $_POST['volFiles'] == 0)) {
-                move_uploaded_file($_FILES['img']['tmp_name'][$i], $dirImg . $_FILES['img']['name'][$i]);
+    //проверяем размеры фалов
+    if ($_POST['volFiles'] != 0) {
+        $arrayNoSize = array_filter(
+            $arrSize,
+            function ($fileSize) {
+                return  $fileSize > ($_POST['volFiles'] * 1000000);
             }
+        );
+
+        if (count($arrayNoSize) != 0) {
+            $errorTitle .= 'К загрузке разрешены только файлы размером меньше ' . $_POST['volFiles'] . 'mB.
+                           Не подходят: ' . count($arrayNoSize) . '<br>';
+        }
+    }
+
+
+
+    //если не ошибок - грузим
+    if (empty($errorTitle)) {
+
+        for ($i = 0; $i < count($arrName); $i++) {
+            move_uploaded_file($arrTmp[$i], $dirImg . $arrName[$i]);
         }
     } else {
 
@@ -88,12 +115,10 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
     </form>
 
     <!--  ecли ошибки - выводим сообщение -->
-    <?php if (!empty($errorCount) || !empty($errorType)) { ?>
+    <?php if (!empty($errorTitle)) { ?>
         <h3 class="error-title">ОШИБКА:</h3>
 
-        <p class="error-load"> <?= ($errorCount) ?></p> <br>
-
-        <p class="error-load"><?= ($errorType) ?> </p> <br>
+        <p class="error-load"> <?= ($errorTitle) ?></p> <br>
     <?php } ?>
 
 
@@ -104,9 +129,8 @@ if (isset($_POST['loadImg']) && !empty($_FILES['img']['name'][0])) {
 
             <div class="documents">
                 <?php
-                $arrImg = scandir($dirImg);
 
-                $arrImg = delRootDir($arrImg);
+                $arrImg = delRootDir(scandir($dirImg));
 
                 foreach ($arrImg as $img) {
                     if (mb_strpos(mime_content_type($dirImg . $img), 'image') === 0) {
