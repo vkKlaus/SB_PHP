@@ -107,7 +107,7 @@ function scanDirFile(string $dir): bool
         if (mb_strpos(mime_content_type($dir . $arrDirImg[$ind]), 'image') !== false) {
             return true;            //нашли картинку в директории - возращаем есть картина
         }
-    };
+    }
 
     return false; //директория не пустая, но картинок нет - возращаем нет картинок
 }

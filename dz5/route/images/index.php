@@ -8,24 +8,24 @@ $volFiles = 0;
 $countFiles = 0;
 $onlyImg = true;
 
-
-$arrName = $_FILES['img']['name'];
-$arrType = $_FILES['img']['type'];
-$arrSize = $_FILES['img']['size'];
-$arrTmp = $_FILES['img']['tmp_name'];
-$arrError = $_FILES['img']['error'];
-
 $errorTitle = '';
 
 
 if (isset($_POST['loadImg']) && !empty($arrName[0])) {
+
+
+    $arrName = $_FILES['img']['name'];
+    $arrType = $_FILES['img']['type'];
+    $arrSize = $_FILES['img']['size'];
+    $arrTmp = $_FILES['img']['tmp_name'];
+    $arrError = $_FILES['img']['error'];
 
     //проверяем количество файлов к загрузке
     if ($_POST['countFiles'] < count($arrName) && $_POST['countFiles'] != 0) {
 
         $errorTitle .= 'Для загрузки разрешено ' . $_POST['countFiles']
             . ' фл. Выбрано ' . count($arrName) . '<br>';
-    };
+    }
 
     //проверяем тип файлов к загрузке
     if ((bool) $_POST['onlyImg']) {
@@ -40,7 +40,7 @@ if (isset($_POST['loadImg']) && !empty($arrName[0])) {
             $errorTitle .=  'К загрузке разрешены только картинки. 
                             Выбрано не картинок: ' . count($arrayNoImg) . '<br>';
         }
-    };
+    }
 
     //проверяем размеры фалов
     if ($_POST['volFiles'] != 0) {

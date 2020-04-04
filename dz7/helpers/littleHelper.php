@@ -92,28 +92,22 @@ function sortArray($mainMenu, $typeSort): array
  */
 function scanDirFile(string $dir): bool
 {
-
     if (!file_exists($dir)) { //если директории нет, то создаем ее 
         mkdir($dir);
         return false; //директория пустая - возращаем нет картинок
     }
 
     $arrDirImg = delRootDir(scandir($dir)); //директоря есть, но вдруг пустая
-
     if (!$arrDirImg) {
         return false; //директория пустая - возращаем нет картинок
     }
 
-
-
     //директоря есть, и вроде не пустая
-
     foreach ($arrDirImg as $ind => $item) {
-
         if (mb_strpos(mime_content_type($dir . $arrDirImg[$ind]), 'image') !== false) {
             return true;            //нашли картинку в директории - возращаем есть картина
         }
-    };
+    }
 
     return false; //директория не пустая, но картинок нет - возращаем нет картинок
 }
@@ -157,16 +151,12 @@ function existFileEnter()
 /** функция поиска индекса user
  * @param  string - user
  * @param  array - массив для поиска user
- * @return int - индекс user / false - user не найден
+ * @return int - индекс user / -1 - user не найден
  */
 function findUser(string $login, array $users): int
 {
-    for ($i = 0; $i < count($users); $i++) {
-        if ($users[$i] == $login) {
-            return $i;
-        }
-    }
-    return -1;
+    $ind = array_search($login, $users);
+    return ($ind === false ? -1 :  $ind);
 }
 
 /** функция поиска индекса user

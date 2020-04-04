@@ -13,10 +13,20 @@ if ($_SERVER['REQUEST_URI'] != '/' && mb_strpos($_SERVER['REQUEST_URI'], '/route
 }
 
 
-require $_SERVER['DOCUMENT_ROOT'] . '/db/main_menu.php'; //данные меню
+//require $_SERVER['DOCUMENT_ROOT'] . '/db/main_menu.php'; //данные меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/config.php';
+
+
+$pdo = connect();
+
+$stmt = $pdo->query('SELECT title, path, id as sort FROM main_menu');
+$mainMenu = [];
+while ($row = $stmt->fetch()) {
+    array_push($mainMenu, $row);
+}
 
 ?>
 
