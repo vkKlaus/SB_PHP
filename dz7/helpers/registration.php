@@ -2,10 +2,17 @@
 $errorUser = '';
 $titleUser = '';
 
+var_dump($_POST);
 $login = $_POST['login'];
+
 if (empty($_POST['login'])) {
     $errorUser .= 'Поле e-mail не может быть пустым <br>';
 }
+
+if (empty($_POST['user'])) {
+    $errorUser .= 'Поле имя не может быть пустым <br>';
+}
+
 
 if (empty($_POST['password_1'])) {
     $errorUser .= 'Поле пароль  не может быть пустым <br>';
@@ -15,35 +22,43 @@ if ($_POST['password_2'] != $_POST['password_1']) {
     $errorUser .= 'Пароли не одинаковы <br>';
 }
 
-if (empty($errorUser)) {
 
-    existFileEnter();
+if (!empty($errorUser)) {
+    $login = $_POST['login'];
+    $user = $_POST['user'];
+    $phone = $_POST['phone'];
+    $emailNotification = !empty($_POST['emailNotification']) ? true : false;
+} else {
 
-    require $_SERVER['DOCUMENT_ROOT'] . '/db/users.php';
-    require $_SERVER['DOCUMENT_ROOT'] . '/db/usersPs.php';
+    $sql = 'SELECT * FROM users WHERE email = :email LIMIT 1';
 
-    if (array_search($_POST['login'], $users) === false) {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['email' => $_POST['login']]);
 
-        array_push($users, $_POST['login']);
-
-        $resWrt = writeUsers($users, 'users', 'users');
-
-
-        if ($resWrt != false) {
-            array_push($userPaswords, $_POST['password_1']);
-
-            $resWrt = writeUsers($userPaswords, 'userPaswords', 'usersPs');
-
-            if ($resWrt == false) {
-                $errorUser .= 'Ошибка записи пароля';
-            } else {
-                $titleUser = 'Пользователь добавлен. Воспользуйтесь авторизацией';
-                $login = '';
-            }
-        } else {
-            $errorUser .= 'Ошибка записи пользователя';
-        }
-    } else {
+    if ($stmt->rowCount() !== 0) {
         $errorUser .= 'Пользователь уже зарегистрирован. Воспользуйтесь авторизацией';
+    } else {
+
+        $sql = 'INSERT INTO users 
+                    (user, email, phone, password, flag_email_notification, flag_active) 
+                    values 
+                    (:user, :email, :phone, :password, :flag_email_notification, :flag_active)';
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([
+            'user' => $_POST['user'],
+            'email' => $_POST['login'],
+            'phone' => empty($_POST['phone']) ? null : (int) $_POST['phone'],
+
+            'password' => md5($_POST['password_1']),
+            'flag_email_notification' => (!empty($_POST['emailNotification']) ? 1 : 0),
+            'flag_active' => 0,
+        ]);
+
+        if ($result) {
+
+            $titleUser = 'Пользователь зарегистрирован.<br>Для входа на сайт воспользуйтесь формой авторизации';
+        } else {
+            $errorUser = 'Ошибка записи в базу данных.<br>Обратитесь к администратору';
+        }
     }
 }

@@ -5,10 +5,10 @@
 function connect()
 {
 
-    static $pdo = 0;
+    static $pdo = null;
 
-    if ($pdo == 0) {
 
+    if ($pdo === null) {
         $host = '127.0.0.1';
         $db   = 'db7';
         $user = 'root';
@@ -22,6 +22,7 @@ function connect()
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
         $pdo = new PDO($dsn, $user, $pass, $opt);
+
         return $pdo;
     }
 }

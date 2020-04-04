@@ -7,10 +7,12 @@ $regis = false;
 $recov = false;
 
 $login = (empty($_COOKIE['login'])) ? '' : $_COOKIE['login'];
-$password = '';
-$password_1 = '';
-$password_2 = '';
-
+$password = !empty($password) ?: '';
+$password_1 = !empty($password_1) ?: '';
+$password_2 = !empty($password_2) ?: '';
+$user = !empty($user) ?: '';
+$phone = !empty($phone) ?: '';
+$emailNotification = !empty($emailNotification) ? true : false;
 
 if (isset($_GET['enter'])) {
     switch ($_GET['enter']) {

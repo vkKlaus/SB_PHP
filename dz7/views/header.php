@@ -28,6 +28,7 @@ while ($row = $stmt->fetch()) {
     array_push($mainMenu, $row);
 }
 
+
 ?>
 
 <!DOCTYPE html>

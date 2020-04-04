@@ -114,6 +114,7 @@ footer {
 .enter-button {
   margin-top: 35px;
   width: 22vw;
+  height: 50px;
 }
 
 .active {
@@ -227,4 +228,21 @@ input {
 }
 .autor-no {
   color: red;
+}
+
+.form-registration {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.form-registration-block {
+  margin-right: 5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid #999;
+  border-radius: 10%;
+  padding: 20px;
 }
