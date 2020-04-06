@@ -8,7 +8,7 @@
 
             <label class="enter-label" for="phone-id">Телефон (только цифры):</label>
 
-            <input type="number" name="phone" value="<?= $phone ?>" id="phone-id" class="enter-field" />
+            <input type="text" name="phone" value="<?= $phone ?>" id="phone-id" class="enter-field" />
 
             <label class="enter-label" for="notification-id">Согласен получать оповещения на e-mail:</label>
 

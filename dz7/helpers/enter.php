@@ -6,30 +6,51 @@ $titleUser = '';
 $login = $_POST['login'];
 if (empty($_POST['login'])) {
     $errorUser .= 'Поле e-mail не может быть пустым <br>';
+} elseif (!filter_var($login, FILTER_VALIDATE_EMAIL)) {
+    $errorUser .= "E-mail адрес '$login' указан не верно.<br>";
 }
 
 if (empty($_POST['password'])) {
     $errorUser .= 'Поле пароль  не может быть пустым <br>';
 }
 
-if (empty($errorUser)) {
+if (!empty($errorUser)) {
+    $login = $_POST['login'];
+} else {
+    $sql = 'SELECT * FROM users WHERE email = :email LIMIT 1';
 
-    existFileEnter();
+    $sql = 'SELECT users.id, users.password, users_roles.user_id, users_roles.role_id 
+    FROM users 
+    LEFT OUTER JOIN users_roles 
+    ON users.id = users_roles.user_id  
+    WHERE users.email=:email';
 
-    require $_SERVER['DOCUMENT_ROOT'] . '/db/users.php';
-    require $_SERVER['DOCUMENT_ROOT'] . '/db/usersPs.php';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['email' => $user['email']]);
 
-    $indUser = array_search($_POST['login'], $users);
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute(['email' => $_POST['login']]);
 
-    if ($indUser === false) {
-        $errorUser = 'Пользователь не найден. Вход воспрещен!';
-    } elseif ($userPaswords[$indUser] != $_POST['password']) {
-        $errorUser = 'Не правильный пароль. Вход воспрещен!';
+
+    if (!$result) {
+        $errorUser .= 'Ошибка выполнения запроса. Обратитесь к администратору!';
+    } elseif ($stmt->rowCount() == 0) {
+        $errorUser .= 'Пользователь не найден. Вход воспрещен!';
     } else {
-        $titleUser = 'Авторизация выполнена.';
+        $row = $stmt->fetchAll();
+        if (!password_verify($_POST['password'], $row[0]['password'])) {
+            $errorUser .= 'Не верный пароль. Вход воспрещен!';
+        } else {
+            $titleUser = 'Авторизация выполнена.';
+            $_SESSION['login'] = $login;
+            $_SESSION['admin'] = false;
+            foreach ($row as $item) {
+                if ($item['role_id'] == '999') {
+                    $_SESSION['admin'] = true;
+                }
+            }
 
-        $_SESSION['login'] = $login;
-
-        require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
+            require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
+        }
     }
 }
