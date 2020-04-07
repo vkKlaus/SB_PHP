@@ -1,6 +1,5 @@
 <?php
-$errorUser = '';
-$titleUser = '';
+$errorUser = $titleUser = '';
 
 $login = $_POST['login'];
 if (empty($_POST['login'])) {

@@ -2,9 +2,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
 
-$autor = false;
-$regis = false;
-$recov = false;
+$autor = $regis = $recov = false;
 
 $login = (empty($_COOKIE['login'])) ? '' : $_COOKIE['login'];
 $password = !empty($password) ?: '';

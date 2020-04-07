@@ -1,6 +1,5 @@
 <?php
-$errorUser = '';
-$titleUser = '';
+$errorUser = $titleUser = '';
 
 var_dump($_POST);
 $login = $_POST['login'];
@@ -66,16 +65,14 @@ if (!empty($errorUser)) {
                 'email' => $_POST['login'],
                 'phone' => empty($_POST['phone']) ? null : (int) $_POST['phone'],
                 'password' => password_hash($_POST['password_1'], PASSWORD_BCRYPT),
-                'flag_email_notification' => (!empty($_POST['emailNotification']) ? 1 : 0),
+                'flag_email_notification' => !empty($_POST['emailNotification']) ? 1 : 0,
                 'flag_active' => 0,
             ]
         );
 
         if ($result) {
             $titleUser = 'Пользователь зарегистрирован.<br>Для входа на сайт воспользуйтесь формой авторизации';
-            $login = '';
-            $user = '';
-            $phone = '';
+            $login =  $user = $phone = '';
             $emailNotification =  true;
         } else {
             $errorUser = 'Ошибка записи в базу данных.<br>Обратитесь к администратору';

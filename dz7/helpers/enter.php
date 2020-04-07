@@ -1,7 +1,6 @@
 <?php
 
-$errorUser = '';
-$titleUser = '';
+$errorUser = $titleUser = '';
 
 $login = $_POST['login'];
 if (empty($_POST['login'])) {
@@ -19,14 +18,11 @@ if (!empty($errorUser)) {
 } else {
     $sql = 'SELECT * FROM users WHERE email = :email LIMIT 1';
 
-    $sql = 'SELECT users.id, users.password, users_roles.user_id, users_roles.role_id 
+    $sql = 'SELECT users.id, users.password, group_user.user_id, group_user.group_id 
     FROM users 
-    LEFT OUTER JOIN users_roles 
-    ON users.id = users_roles.user_id  
+    LEFT OUTER JOIN group_user 
+    ON users.id = group_user.user_id  
     WHERE users.email=:email';
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['email' => $user['email']]);
 
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute(['email' => $_POST['login']]);
@@ -38,6 +34,7 @@ if (!empty($errorUser)) {
         $errorUser .= 'Пользователь не найден. Вход воспрещен!';
     } else {
         $row = $stmt->fetchAll();
+
         if (!password_verify($_POST['password'], $row[0]['password'])) {
             $errorUser .= 'Не верный пароль. Вход воспрещен!';
         } else {
@@ -45,7 +42,8 @@ if (!empty($errorUser)) {
             $_SESSION['login'] = $login;
             $_SESSION['admin'] = false;
             foreach ($row as $item) {
-                if ($item['role_id'] == '999') {
+
+                if ($item['group_id'] == '999') {
                     $_SESSION['admin'] = true;
                 }
             }

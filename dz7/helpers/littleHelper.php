@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * функция обрезания строки
  * @param string $element обрезаемая строка
@@ -183,4 +184,14 @@ function writeUsers(array $users, string $nameArray, string $path): bool
     } else {
         return false;
     }
+}
+
+/** функция проверки авторизации
+ * @param  
+ * @return bool - true в сессии есть запись об авторизации / false -нет
+ */
+
+function isAuth(): bool
+{
+    return empty($_SESSION['login']);
 }

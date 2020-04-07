@@ -2,6 +2,11 @@
 
 session_start();
 
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_db.php';
+
 if (isset($_SESSION['login'])) {
     setcookie('login', $_SESSION['login'], time() + 2592000, '/');
 }
@@ -13,15 +18,12 @@ if (isset($_SESSION['admin'])) {
 }
 
 if ($_SERVER['REQUEST_URI'] != '/' && mb_strpos($_SERVER['REQUEST_URI'], '/route/enter/') === false) {
-    if (empty($_SESSION['login'])) {
+    if (isAuth()) {
         require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
     }
 }
 
-require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
-require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
-require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
-require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_db.php';
+
 
 
 $pdo = connect();
@@ -63,14 +65,14 @@ while ($row = $stmt->fetch()) {
         <div class="right-header">
 
             <!-- авторизация / регистрация -->
-            <a href="/route/enter/?enter=<?= !empty($_SESSION['login']) ? 'exit' : 'autor' ?>" class="horizontal-menu-link">
+            <a href="/route/enter/?enter=<?= !isAuth() ? 'exit' : 'autor' ?>" class="horizontal-menu-link">
                 <span class="horizontal-menu-element">
-                    <?= !empty($_SESSION['login']) ? 'выйти' : 'войти на сайт' ?>
+                    <?= !isAuth() ? 'выйти' : 'войти на сайт' ?>
 
                 </span>
 
 
-                <?php if (!empty($_SESSION['login'])) { ?>
+                <?php if (!isAuth()) { ?>
                     <div class="autor-yes">
                         <?= $_SESSION['login'] ?>
 

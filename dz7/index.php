@@ -7,7 +7,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
     <!-- вызываем процедуру формирования страницы передаем заголовок -->
     <?php viewTxt($mainMenu); ?>
 
-    <?php if (empty($_SESSION['login'])) { ?>
+    <?php if (isAuth()) { ?>
         <br>
         <p class="error-load">Вы не авторизированы. Вам доступен просмотр только главной страницы</p>
     <?php } ?>

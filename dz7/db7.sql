@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 06 2020 г., 20:47
+-- Время создания: Апр 07 2020 г., 13:38
 -- Версия сервера: 8.0.15
 -- Версия PHP: 7.3.9
 
@@ -58,6 +58,14 @@ CREATE TABLE `groups` (
   `description` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `groups`
+--
+
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+(1, 'users', 'пользователи'),
+(999, 'admins', 'администраторы');
+
 -- --------------------------------------------------------
 
 --
@@ -68,6 +76,23 @@ CREATE TABLE `group_user` (
   `user_id` int(10) NOT NULL,
   `group_id` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `group_user`
+--
+
+INSERT INTO `group_user` (`user_id`, `group_id`) VALUES
+(1, 1),
+(1, 999),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1);
 
 -- --------------------------------------------------------
 
@@ -125,25 +150,6 @@ CREATE TABLE `message_recipient` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `roles`
---
-
-CREATE TABLE `roles` (
-  `id` int(3) NOT NULL,
-  `name` varchar(45) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `roles`
---
-
-INSERT INTO `roles` (`id`, `name`) VALUES
-(1, 'пользователь'),
-(999, 'Администратор');
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `section`
 --
 
@@ -178,43 +184,15 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `user`, `email`, `phone`, `password`, `flag_email_notification`, `flag_active`) VALUES
 (1, 'администратор', 'adm@dz7.ru', NULL, '$2y$10$sPUSc9nU8l8QDwm4YkAK9O/IXs46SfEI3ZxQ.dWp47kZBAzfKkNPy', 1, 0),
-(2, 'us10', 'us1@1.dz7', '111 - 11 - 11', '$2y$10$G2yPZTAklxPSkUKzNLm2rOJtg1agzcp7oPKwXoH./V7xzrhgFgWam', 1, 0),
-(3, 'us20', 'us2@2.dz7', '222 - 22 - 22', '$2y$10$/T4nsXh..CsWx9VWdolfouZKas70GLOOco5KFjwCD3B0q9vA6eG4e', 1, 0),
-(4, 'us30', 'us3@3.dz7', '333 - 33 - 33', '$2y$10$e6zGQpe/BJRUjzal8cLgnuUbkNpqxAXIB8ZwAEX5d8/5bTRwDWNjC', 1, 0),
-(5, 'us40', 'us4@4.dz7', '444 - 44 - 44', '$2y$10$hsuNVPk3NiltWRzN3iafX.EMSGNIyGZABVrl6DOnZj2xua/63v.NW', 1, 0),
-(6, 'us50', 'us5@5.dz7', '555 - 55 - 55', '$2y$10$mueAAxmFDi..Pkxk.kofyuYGdy1F7A58qwrnqj691cdYx3GxYY6RS', 1, 0),
-(7, 'us60', 'us6@6.dz7', '666 - 66 - 66', '$2y$10$8OZXTfzLQ/yMubuE7EeGY.ulAT4M7kSXI4ZMveajpN6mzjBkpvHEe', 1, 0),
-(8, 'us70', 'us7@7.dz7', '777 - 77 - 77', '$2y$10$.np9gN4GCGGBvm838yT5OOyeUGoR8k9EqQLDK0pTQ0YnIvzce3qe2', 1, 0),
-(9, 'us80', 'us8@8.dz7', '888 - 88 - 88', '$2y$10$wLKB2AC5CUOUu6TbQozzuuAN9G2vbyFDQFqsh2FsdZt9rwi.Jc9ly', 1, 0),
-(10, 'us90', 'us9@9.dz7', '999 - 99 - 99', '$2y$10$o3E85jx0wBWcRyL8sF5ebeiN38cV5.Hk6uglxjr5sOtqnCY9v6Qpi', 1, 0);
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `users_roles`
---
-
-CREATE TABLE `users_roles` (
-  `user_id` int(11) NOT NULL,
-  `role_id` int(3) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `users_roles`
---
-
-INSERT INTO `users_roles` (`user_id`, `role_id`) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(9, 1),
-(10, 1),
-(1, 999);
+(2, 'us10', 'us1@1.dz7', '111 - 11 - 11', '$2y$10$vshUiVoa7fZUGk5p/Fe3c.jisi6RGwXQaD9C4rKxDekIOlr7C6xzu', 1, 0),
+(3, 'us20', 'us2@2.dz7', '222 - 22 - 22', '$2y$10$64QV6l8UTzHH5/vSM1k.Z.NhA3nLbWHdQ7Bc.hDxbIANdb.MAE4rK', 1, 0),
+(4, 'us30', 'us3@3.dz7', '333 - 33 - 33', '$2y$10$rvWvRl0cqI26FbljVxBKpuyAPVsT521ACwopfGLYo0BSWrdUyGP2u', 1, 0),
+(5, 'us40', 'us4@4.dz7', '444 - 44 - 44', '$2y$10$iANNvDErb55JEHYaamtFjOr0bA/RViCbUKTbcTAM5u6VyYm8u7Sx.', 1, 0),
+(6, 'us50', 'us5@5.dz7', '555 - 55 - 55', '$2y$10$oKwG9s9.DUQsW57ghrGEseHljuBmskGgQDh59wQnURLvn0rL7jsze', 1, 0),
+(7, 'us60', 'us6@6.dz7', '666 - 66 - 66', '$2y$10$fuR.LWKwdj89tSy4nLOuzugwAZ81KMvPelymgsJ.Dz042n5lQLCYq', 1, 0),
+(8, 'us70', 'us7@7.dz7', '777 - 77 - 77', '$2y$10$wY34zq0AOHhNHP8etIns6..YRsBBfjMGNXt4rOx7t17gbNbTqxJvC', 1, 0),
+(9, 'us80', 'us8@8.dz7', '888 - 88 - 88', '$2y$10$Uu/i8amuaIZ1dEUoa9AGBeH/pdx9tbpX2djalPIXwPfI5JKvMZAwy', 1, 0),
+(10, 'us90', 'us9@9.dz7', '999 - 99 - 99', '$2y$10$fWJA1uO1rzQrU7iatgV/q.OdzgZ3TxGOa87Vk7Jdpw3HgPsipZaBO', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -266,13 +244,6 @@ ALTER TABLE `message_recipient`
   ADD KEY `fr_key_user_idx` (`recipient_user_id`);
 
 --
--- Индексы таблицы `roles`
---
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id_UNIQUE` (`id`);
-
---
 -- Индексы таблицы `section`
 --
 ALTER TABLE `section`
@@ -291,13 +262,6 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
 
 --
--- Индексы таблицы `users_roles`
---
-ALTER TABLE `users_roles`
-  ADD PRIMARY KEY (`user_id`,`role_id`),
-  ADD KEY `fk_role_id_idx` (`role_id`);
-
---
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -311,7 +275,7 @@ ALTER TABLE `colors`
 -- AUTO_INCREMENT для таблицы `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000;
 
 --
 -- AUTO_INCREMENT для таблицы `messages`
@@ -362,13 +326,6 @@ ALTER TABLE `section`
   ADD CONSTRAINT `fr_key_color_id` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fr_key_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `section` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fr_key_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Ограничения внешнего ключа таблицы `users_roles`
---
-ALTER TABLE `users_roles`
-  ADD CONSTRAINT `fk_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

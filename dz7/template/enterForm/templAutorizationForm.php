@@ -6,7 +6,7 @@
 
     <label class="enter-label" for="password-id">Ваш пароль:</label>
 
-    <input id="password_id" name="password" type="password" value="<?= $password ?>" id="password-id" class="enter-field" />
+    <input name="password" type="password" value="<?= $password ?>" id="password-id" class="enter-field" />
 
     <input type="submit" value="Войти" name="enter" class="enter-button" />
 
