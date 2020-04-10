@@ -6,6 +6,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_query.php';
+
 
 if (isset($_SESSION['login'])) {
     setcookie('login', $_SESSION['login'], time() + 2592000, '/');
@@ -28,6 +30,14 @@ if ($_SERVER['REQUEST_URI'] != '/' && mb_strpos($_SERVER['REQUEST_URI'], '/route
 
 $pdo = connect();
 
+$role = selectUserGroup($pdo);
+$role = array_filter(
+    $role,
+    function ($element) {  //из массива файлов даляем (.) и (..)
+        return ($element['group_id'] == 3);
+    }
+);
+
 $sql = 'SELECT title, path, id as sort 
         FROM main_menu 
         WHERE usePanel=1 '
@@ -36,6 +46,13 @@ $sql = 'SELECT title, path, id as sort
 $stmt = $pdo->query($sql);
 $mainMenu = [];
 while ($row = $stmt->fetch()) {
+
+    if (isset($_SESSION['login']) && strpos($row['title'], 'Профиль') !== false) {
+        $row['title'] .= ' ' . $_SESSION['login'];
+    } elseif (strpos($row['title'], 'Разделы') !== false && (!count($role))) {
+        continue;
+    }
+
     array_push($mainMenu, $row);
 }
 
@@ -48,7 +65,7 @@ while ($row = $stmt->fetch()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dz5</title>
+    <title>dz7</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/jquery.fancybox.min.css" />
 </head>
