@@ -8,6 +8,8 @@ if (isset($_GET['type']) &&  $_GET['type'] == 'createUsers') {
     createSections($pdo);
 } elseif (isset($_GET['type']) &&  $_GET['type'] == 'createColor') {
     createColor($pdo);
+} elseif (isset($_GET['type']) &&  $_GET['type'] == 'createMessage') {
+    createMessages($pdo);
 }
 
 
@@ -20,9 +22,10 @@ if (isset($_GET['type']) &&  $_GET['type'] == 'createUsers') {
     <?php viewTxt($mainMenu); ?>
     <br>
     <ul class="page">
-        <li><a href="/route/admin/?type=createUsers" role="button">Создать пользователей</a></li><br>
-        <li><a href="/route/admin/?type=createColor" role="button">Создать цвета</a></li><br>
-        <li><a href="/route/admin/?type=createSection" role="button">Создать разделы</a></li><br>
+        <li><a href="/route/admin/?type=createUsers" role="button">Заполнить таблицу пользователей</a></li><br>
+        <li><a href="/route/admin/?type=createColor" role="button">Заполнить таблицу цвета</a></li><br>
+        <li><a href="/route/admin/?type=createSection" role="button">Заполнить таблицу разделы</a></li><br>
+        <li><a href="/route/admin/?type=createMessage" role="button">Заполнить таблицу сообщений</a></li><br>
 
 
     </ul>

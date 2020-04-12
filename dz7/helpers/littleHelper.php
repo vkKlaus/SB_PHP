@@ -195,3 +195,30 @@ function isAuth(): bool
 {
     return empty($_SESSION['login']);
 }
+
+/** функция проверки авторизации
+ * @param array массив с реквизитами сообщения 
+ * @return string - строка с ошибками
+ */
+
+function validationMsg($msg)
+{
+    $error = '';
+
+    if (trim($msg['section']) == 0) {
+        $error .= ' > выберите раздел < <br>';
+    }
+
+    if (trim($msg['title']) == '') {
+        $error .= ' > заголовок сообщения не может быть пустым < <br>';
+    }
+
+    if (trim($msg['text']) == '') {
+        $error .= ' > текст сообщения не может быть пустым < <br>';
+    }
+
+    if (!isset($msg['recepient'])) {
+        $error .= ' > список рассылки не может быть пустым < <br>';
+    }
+    return $error;
+}

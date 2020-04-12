@@ -1,7 +1,6 @@
 <?php
 $errorUser = $titleUser = '';
 
-var_dump($_POST);
 $login = $_POST['login'];
 
 if (empty($_POST['login'])) {

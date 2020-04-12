@@ -2,9 +2,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
+//         служебные функции                                                              //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 /**СЛУЖЕБНЫЕ МОДУЛИ. СПОЛЬЗУЮТЯ ИСКЛЮЧИТЕЛЬНО ДЛЯ ОТЛАДКИ, ЧТОБЫ НЕ ЗАБИВАТЬ ПЕВОНАЧАЛЬНЫЕ ДАННЫЕ РУКАМИ
@@ -152,23 +150,102 @@ function createColor($pdo)
     $result = $stmt->execute();
 }
 
+/** функция заполнения сообщений и рассылки */
+function createMessages($pdo)
+{
+    require $_SERVER['DOCUMENT_ROOT'] . '/db/PDOmessages.php';
+
+
+
+    //сообщения
+    $sql = 'INSERT INTO messages 
+            (
+                title,
+                text,
+                user_id_sender,
+                section_id
+            ) 
+            values ';
+
+    foreach ($messages as $message) {
+        $sql .= '
+                ("' .
+            $message['title'] . '","' .
+            $message['text'] . '",' .
+            $message['user_id_sender'] . ',' .
+            $message['section_id'] .
+            '),';
+    }
+
+    $sql .= '~';
+    $sql = str_replace(',~', '', $sql);
+
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+
+    // рассылка
+    $sql = 'INSERT INTO message_recipient 
+            (
+                message_id,
+                recipient_user_id
+            ) 
+            values ';
+
+    foreach ($user_recepient as $recepient) {
+
+        $sql .= '
+                (' .
+            $recepient['message_id'] . ',' .
+            $recepient['recipient_user_id']  .
+            '),';
+    }
+
+    $sql .= '~';
+    $sql = str_replace(',~', '', $sql);
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-/**  Функция выборки всех пользователей и групп
+
+/**  Функция выборки всех пользователей 
  * @param object - $pdo объект соединения с БД
  * @return array  - массив - выборка из БД
  */
-function selectUserGroup(object $pdo): array
+function selectUsers(object $pdo): array
+{
+    $sql = 'SELECT 
+            id, 
+            user,
+            email 
+            FROM `users`';
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+
+    return $stmt->fetchAll();
+}
+
+/**  Функция выборки информации о  пользователе и группах
+ * @param object - $pdo объект соединения с БД
+ * @param string - $email login пользователя
+ * @return array  - массив - выборка из БД
+ */
+function selectUserGroup(object $pdo, string $email = null): array
 {
     $sql = 'SELECT 
                 `users`.id, 
                 `users`.user,
                 `users`.email, 
                 `users`.phone, 
+                `users`.password, 
                 `users`.flag_email_notification,
                 `group_user`.user_id,
                 `group_user`.group_id,
@@ -181,7 +258,9 @@ function selectUserGroup(object $pdo): array
             WHERE `users`.email=:email';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute(['email' => $_SESSION['login']]);
+    $result = $stmt->execute(['email' => ($email == null && isset($_SESSION['login']) ?
+        $_SESSION['login']
+        : $email)]);
 
     return $stmt->fetchAll();
 }
@@ -237,6 +316,21 @@ function selectColor(object $pdo): array
     return $stmt->fetchAll();
 }
 
+/**  Функция выборки menu 
+ * @param object - $pdo объект соединения с БД
+ * @return array  - массив - выборка из БД
+ */
+function selectMenu(object $pdo): array
+{
+    $sql = 'SELECT title, path, id as sort 
+        FROM main_menu 
+        WHERE use_panel=1 ';
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+    return $stmt->fetchAll();
+}
+
 /**  Функция добавления секции 
  * @param object - $pdo объект соединения с БД
  * @param array  - ассоц.массив добавляемых данных
@@ -245,19 +339,19 @@ function selectColor(object $pdo): array
 function insertSection(object $pdo, array $dataArr, int $user_id)
 {
     $sql = 'INSERT INTO sections 
-    (
-        name,
-        parent_id,
-        user_id,
-        color_id
-    )
-VALUES
-    (
-        :name, 
-        :parent_id,
-        :user_id,
-        :color_id
-)';
+                (
+                    name,
+                    parent_id,
+                    user_id,
+                    color_id
+                )
+            VALUES
+                (
+                    :name, 
+                    :parent_id,
+                    :user_id,
+                    :color_id
+            )';
 
     $stmt = $pdo->prepare($sql);
 
@@ -267,7 +361,162 @@ VALUES
             'parent_id' => $dataArr['section'],
             'user_id' => $user_id,
             'color_id' => $dataArr['color']
-
         ]
     );
+}
+
+/**  Функция получения входящих сообщений
+ * @param object - $pdo объект соединения с БД
+ * @param int - id текущего пользователя
+ * @return array массив входящих сообщения
+ */
+function selectMsgIn(object $pdo, int $user_id): array
+{
+
+    $sql = 'SELECT
+                `messages`.id,
+                `messages`.title as msg_title,
+                `messages`.section_id,
+                `messages`.date_time as msg_date,
+                `messages`.text as msg_text,
+                `messages`.user_id_sender as sender,
+                `message_recipient`.recipient_user_id as recipient,
+                `users`.user as userName,
+                `users`.email as email,
+                `sections`.name as sect_name,
+                `sections`.color_id,
+                `colors`.red as red,
+                `colors`.green as green,
+                `colors`.blue as blue
+            FROM `messages`
+            LEFT OUTER JOIN `message_recipient` ON `message_recipient`.message_id = `messages`.id
+            LEFT OUTER JOIN `users` ON `users`.id = `messages`.user_id_sender
+            LEFT OUTER JOIN `sections` ON `messages`.section_id = `sections`.id
+            LEFT OUTER JOIN `colors` ON  `sections`.color_id = `colors`.id
+            WHERE `message_recipient`.recipient_user_id = :user_id
+            ORDER BY `messages`.date_time DESC, `users`.user, `messages`.id';
+
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute(['user_id' => $user_id]);
+
+    return $stmt->fetchAll();
+}
+
+/**  Функция получения исходящих сообщений
+ * @param object - $pdo объект соединения с БД
+ * @param int - id текущего пользователя
+ * @return array массив входящих сообщения
+ */
+function selectMsgOut(object $pdo, int $user_id): array
+{
+    $sql = 'SELECT
+                `messages`.id,
+                `messages`.title as msg_title,
+                `messages`.section_id,
+                `messages`.date_time as msg_date,
+                `messages`.text as msg_text,
+                `messages`.user_id_sender as sender,
+                `message_recipient`.recipient_user_id as recipient,
+                `users`.user as userName,
+                `users`.email as email,
+                `sections`.name as sect_name,
+                `sections`.color_id,
+                `colors`.red as red,
+                `colors`.green as green,
+                `colors`.blue as blue
+            FROM `messages`
+            LEFT OUTER JOIN `message_recipient` ON `message_recipient`.message_id = `messages`.id
+            LEFT OUTER JOIN `users` ON `users`.id = `message_recipient`.recipient_user_id
+            LEFT OUTER JOIN `sections` ON `messages`.section_id = `sections`.id
+            LEFT OUTER JOIN `colors` ON  `sections`.color_id = `colors`.id
+            WHERE `messages`.user_id_sender = :user_id
+            ORDER BY `messages`.date_time DESC, `messages`.id, `users`.user, `messages`.id';
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute(['user_id' => $user_id]);
+
+    return $stmt->fetchAll();
+}
+
+/**  Функция добавления нового сообщения
+ * @param object - $pdo объект соединения с БД
+ * @param array - $msg массив с данными сообщения
+ * @return bool - результат 
+ */
+function  insertMessage(object $pdo, array $msg): bool
+{
+    //запись сообщения
+    $sql = 'INSERT INTO messages 
+                (
+                    title,
+                    section_id,
+                    text,
+                    user_id_sender
+                )
+            VALUES
+                (
+                    :title, 
+                    :section_id,
+                    :text,
+                    :user_id_sender
+            )';
+
+    $stmt = $pdo->prepare($sql);
+
+    $result = $stmt->execute(
+        [
+            'title' => $msg['title'],
+            'section_id' => (int) $msg['section'],
+            'text' => $msg['text'],
+            'user_id_sender' => $_SESSION['user_id']
+        ]
+    );
+
+    if (!$result) {
+        return false;
+    }
+
+    //получаем id нового сообщения
+    $sql = 'SELECT MAX(id) as id FROM `messages`';
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+    $id = ($stmt->fetchAll())[0]['id'];
+
+    //проверяем раасылку ВСЕ
+    $users = [];
+
+    if (in_array(-1, $msg['recepient'])) {
+        $users = selectUsers($pdo);
+        $users = array_filter(
+            $users,
+            function ($element) {
+                return $element['id'] !== $_SESSION['user_id'];
+            }
+        );
+        $msg['recepient'] = [];
+        foreach ($users as $user) {
+            $msg['recepient'][] = $user['id'];
+        }
+    }
+
+    //записывем рассылку
+    $sql = 'INSERT INTO message_recipient 
+                (
+                    message_id,
+                    recipient_user_id
+                )
+            VALUES';
+
+    foreach ($msg['recepient'] as $recId) {
+        $sql .= '(' . $id . ',' . $recId . '),';
+    };
+
+    $sql .= '~';
+    $sql = str_replace(',~', '', $sql);
+
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute();
+
+    return $result;
 }

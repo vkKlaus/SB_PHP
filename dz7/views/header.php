@@ -10,7 +10,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_query.php';
 
 
 if (isset($_SESSION['login'])) {
-    setcookie('login', $_SESSION['login'], time() + 2592000, '/');
+    setcookie('login', $_SESSION['login'], 0, '/');
 }
 
 $admin = false;
@@ -30,31 +30,71 @@ if ($_SERVER['REQUEST_URI'] != '/' && mb_strpos($_SERVER['REQUEST_URI'], '/route
 
 $pdo = connect();
 
-$role = selectUserGroup($pdo);
-$role = array_filter(
-    $role,
-    function ($element) {  //из массива файлов даляем (.) и (..)
+//определяем роль добавления разделов group_id==3
+$roleCrSect = selectUserGroup($pdo);
+$roleCrSect = array_filter(
+    $roleCrSect,
+    function ($element) {
         return ($element['group_id'] == 3);
     }
 );
 
-$sql = 'SELECT title, path, id as sort 
-        FROM main_menu 
-        WHERE usePanel=1 '
-    . (($admin) ? '' : ' AND  adm_panel = 0');
 
-$stmt = $pdo->query($sql);
+// if (isset($_SESSION['mainMenu']) && count($_SESSION['mainMenu']) > 1) {
+
+//     $mainMenu = $_SESSION['mainMenu'];
+// } else {
+//     $menuPDO = selectMenu($pdo);
+//     $mainMenu = [];
+
+//     foreach ($menuPDO as $item) {
+//         if (!isset($_SESSION['login']) && strpos($item['title'], 'Главная') !== 0) {
+//             continue;
+//         } elseif (
+//             (isset($_SESSION['admin']))
+//             && (!$_SESSION['admin'])
+//             && strpos($item['title'], 'Админ') !== 0
+//         ) {
+//             continue;
+//         } elseif (isset($_SESSION['login']) && strpos($item['title'], 'Профиль') !== false) {
+//             $item['title'] .= ' ' . $_SESSION['login'];
+//         } elseif (strpos($item['title'], 'Разделы') !== false && (!count($roleCrSect))) {
+//             continue;
+//         }
+//         array_push($mainMenu, $item);
+//     }
+//     $_SESSION['mainMenu'] = $mainMenu;
+// }
+
 $mainMenu = [];
-while ($row = $stmt->fetch()) {
 
-    if (isset($_SESSION['login']) && strpos($row['title'], 'Профиль') !== false) {
-        $row['title'] .= ' ' . $_SESSION['login'];
-    } elseif (strpos($row['title'], 'Разделы') !== false && (!count($role))) {
-        continue;
+if (isset($_SESSION['mainMenu'])) {
+    $mainMenu = $_SESSION['mainMenu'];
+} else {
+    $menuPDO = selectMenu($pdo);
+    $mainMenu = [];
+
+    foreach ($menuPDO as $item) {
+        if (!isset($_SESSION['login']) && strpos($item['title'], 'Главная') !== 0) {
+            continue;
+        }
+        array_push($mainMenu, $item);
     }
 
-    array_push($mainMenu, $row);
+    $_SESSION['mainMenu'] = $mainMenu;
 }
+
+
+// while ($row = $stmt->fetch()) {
+
+//     if (isset($_SESSION['login']) && strpos($row['title'], 'Профиль') !== false) {
+//         $row['title'] .= ' ' . $_SESSION['login'];
+//     } elseif (strpos($row['title'], 'Разделы') !== false && (!count($role))) {
+//         continue;
+//     }
+
+//     array_push($mainMenu, $row);
+// }
 
 
 ?>

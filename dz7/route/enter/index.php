@@ -24,8 +24,9 @@ if (isset($_GET['enter'])) {
             $recov = true;
             break;
         case 'exit':
-            unset($_SESSION['login']);
-            unset($_SESSION['admin']);
+            foreach ($_SESSION as $key => $item) {
+                unset($_SESSION[$key]);
+            }
             setcookie('login', '', time() - 5);
             require $_SERVER['DOCUMENT_ROOT'] . '/helpers/exit.php';
             break;

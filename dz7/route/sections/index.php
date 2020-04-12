@@ -3,7 +3,7 @@
 $section = 0;
 $sectionName = '../';
 $subSection = '';
-
+$linkSections = '/route/sections/';
 
 
 if (isset($_SESSION['login'])) {
