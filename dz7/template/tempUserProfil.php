@@ -25,9 +25,14 @@
         <h3>входит в группы:</h3>
 
         <ul>
-            <?php foreach ($row as $value) { ?>
+            <?php foreach ($row as $value) {
+                if ($value['description'] == null) {
+                    $group = 'нет групп';
+                } else {
+                    $group = $value['description'];
+                } ?>
                 <li>
-                    <?= $value['description'] ?>
+                    <?= $group  ?>
                 </li>
             <?php } ?>
         </ul>

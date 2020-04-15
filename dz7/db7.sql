@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 12 2020 г., 21:19
+-- Время создания: Апр 14 2020 г., 10:09
 -- Версия сервера: 8.0.15
 -- Версия PHP: 7.3.9
 
@@ -92,8 +92,6 @@ INSERT INTO `group_user` (`user_id`, `group_id`) VALUES
 (1, 999),
 (2, 1),
 (2, 2),
-(2, 3),
-(2, 999),
 (3, 1),
 (4, 1),
 (5, 1),
@@ -118,25 +116,25 @@ CREATE TABLE `main_menu` (
   `path` varchar(255) NOT NULL,
   `use_panel` tinyint(1) NOT NULL DEFAULT '0',
   `adm_panel` tinyint(1) NOT NULL DEFAULT '0',
-  `no_autor` tinyint(1) NOT NULL DEFAULT '0'
+  `group_id` int(3) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `main_menu`
 --
 
-INSERT INTO `main_menu` (`id`, `title`, `path`, `use_panel`, `adm_panel`, `no_autor`) VALUES
-(1, 'Главная', '/', 1, 0, 1),
+INSERT INTO `main_menu` (`id`, `title`, `path`, `use_panel`, `adm_panel`, `group_id`) VALUES
+(1, 'Главная', '/', 1, 0, 0),
 (100, 'О нас', '/route/about/', 0, 0, 0),
 (200, 'Новости', '/route/news/', 0, 0, 0),
 (300, 'Каталог', '/route/catalog/', 0, 0, 0),
 (400, 'Контакты для связи', '/route/contact/', 0, 0, 0),
 (500, 'Галерея', '/route/images/', 0, 0, 0),
 (550, 'Сообщения', '/route/messages/', 1, 0, 0),
-(560, 'Отправить сообщение', '/route/msgOut/', 1, 0, 0),
-(570, 'Разделы', '/route/sections/', 1, 0, 0),
+(560, 'Отправить сообщение', '/route/msgOut/', 1, 0, 2),
+(570, 'Разделы', '/route/sections/', 1, 0, 3),
 (600, 'Профиль ', '/route/user/', 1, 0, 0),
-(999, 'Админ', '/route/admin/', 1, 1, 0);
+(999, 'Админ', '/route/admin/', 1, 1, 999);
 
 -- --------------------------------------------------------
 
@@ -258,7 +256,8 @@ INSERT INTO `messages` (`id`, `title`, `section_id`, `text`, `user_id_sender`) V
 (98, '98 - Заголовок', 6, '98 - Какой то очень умный текст', 2),
 (99, '99 - Заголовок', 7, '99 - Какой то очень умный текст', 5),
 (100, '100 - Заголовок', 9, '100 - Какой то очень умный текст', 8),
-(101, 'новый заголовок', 4, ' Здесь есть сообщение', 1);
+(101, 'новый заголовок', 4, ' Здесь есть сообщение', 1),
+(102, 'wf', 3, ' lllll', 2);
 
 -- --------------------------------------------------------
 
@@ -554,7 +553,16 @@ INSERT INTO `message_recipient` (`message_id`, `recipient_user_id`) VALUES
 (101, 7),
 (101, 8),
 (101, 9),
-(101, 10);
+(101, 10),
+(102, 1),
+(102, 3),
+(102, 4),
+(102, 5),
+(102, 6),
+(102, 7),
+(102, 8),
+(102, 9),
+(102, 10);
 
 -- --------------------------------------------------------
 
@@ -712,7 +720,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT для таблицы `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT для таблицы `sections`

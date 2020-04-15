@@ -40,7 +40,7 @@ function createUsers($pdo)
                 :flag_active
             )';
             $stmt = $pdo->prepare($sql);
-            $result = $stmt->execute($user);
+            $stmt->execute($user);
 
             $sql = 'SELECT users.id, group_user.user_id, group_user.group_id 
                     FROM users 
@@ -113,7 +113,7 @@ function createSections($pdo)
 
     $stmt = $pdo->prepare($sql);
 
-    $result = $stmt->execute();
+    $stmt->execute();
 }
 
 /** функция заполнения цветов */
@@ -147,7 +147,7 @@ function createColor($pdo)
 
     $stmt = $pdo->prepare($sql);
 
-    $result = $stmt->execute();
+    $stmt->execute();
 }
 
 /** функция заполнения сообщений и рассылки */
@@ -182,7 +182,7 @@ function createMessages($pdo)
 
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
 
     // рассылка
     $sql = 'INSERT INTO message_recipient 
@@ -205,7 +205,7 @@ function createMessages($pdo)
     $sql = str_replace(',~', '', $sql);
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ function selectUsers(object $pdo): array
             FROM `users`';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
 
     return $stmt->fetchAll();
 }
@@ -258,7 +258,7 @@ function selectUserGroup(object $pdo, string $email = null): array
             WHERE `users`.email=:email';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute(['email' => ($email == null && isset($_SESSION['login']) ?
+    $stmt->execute(['email' => ($email == null && isset($_SESSION['login']) ?
         $_SESSION['login']
         : $email)]);
 
@@ -290,14 +290,14 @@ function selectSection(object $pdo): array
             ORDER BY `sections`.parent_id';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
     $resDB = $stmt->fetchAll();
 
     $category = [];
 
     foreach ($resDB  as $sectDB) {
         $category[$sectDB['parent_id']][] = $sectDB;
-    };
+    }
 
     return $category;
 }
@@ -311,7 +311,7 @@ function selectColor(object $pdo): array
     $sql = 'SELECT id,name FROM `colors` ';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
 
     return $stmt->fetchAll();
 }
@@ -322,12 +322,12 @@ function selectColor(object $pdo): array
  */
 function selectMenu(object $pdo): array
 {
-    $sql = 'SELECT title, path, id as sort 
+    $sql = 'SELECT title, path, id as sort, group_id 
         FROM main_menu 
         WHERE use_panel=1 ';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
+    $stmt->execute();
     return $stmt->fetchAll();
 }
 
@@ -355,7 +355,7 @@ function insertSection(object $pdo, array $dataArr, int $user_id)
 
     $stmt = $pdo->prepare($sql);
 
-    $result = $stmt->execute(
+    $stmt->execute(
         [
             'name' => $dataArr['subSection'],
             'parent_id' => $dataArr['section'],
@@ -398,7 +398,7 @@ function selectMsgIn(object $pdo, int $user_id): array
 
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute(['user_id' => $user_id]);
+    $stmt->execute(['user_id' => $user_id]);
 
     return $stmt->fetchAll();
 }
@@ -434,7 +434,7 @@ function selectMsgOut(object $pdo, int $user_id): array
             ORDER BY `messages`.date_time DESC, `messages`.id, `users`.user, `messages`.id';
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute(['user_id' => $user_id]);
+    $stmt->execute(['user_id' => $user_id]);
 
     return $stmt->fetchAll();
 }
@@ -477,11 +477,10 @@ function  insertMessage(object $pdo, array $msg): bool
         return false;
     }
 
-    //получаем id нового сообщения
-    $sql = 'SELECT MAX(id) as id FROM `messages`';
+    $sql = 'SELECT LAST_INSERT_ID() as id';
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
-    $id = ($stmt->fetchAll())[0]['id'];
+    $stmt->execute();
+    $id = $stmt->fetch()['id'];
 
     //проверяем раасылку ВСЕ
     $users = [];
@@ -510,13 +509,12 @@ function  insertMessage(object $pdo, array $msg): bool
 
     foreach ($msg['recepient'] as $recId) {
         $sql .= '(' . $id . ',' . $recId . '),';
-    };
+    }
 
     $sql .= '~';
     $sql = str_replace(',~', '', $sql);
 
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute();
 
-    return $result;
+    return $stmt->execute();
 }

@@ -14,8 +14,8 @@ if (isset($_SESSION['user_id'])) {
     <br>
     <div class="container-msg">
         <div class="msg">
-            <h4 class="page-header">входящие</h3>
-                <?php require $_SERVER['DOCUMENT_ROOT'] . '/template/msg/tempMsgIn.php'; ?>
+            <h4 class="page-header">входящие</h4>
+            <?php require $_SERVER['DOCUMENT_ROOT'] . '/template/msg/tempMsgIn.php'; ?>
 
         </div>
 

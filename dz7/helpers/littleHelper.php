@@ -222,3 +222,21 @@ function validationMsg($msg)
     }
     return $error;
 }
+/** функция проверки авторизации
+ */
+function verifyRight()
+{
+    if (strpos($_SERVER['REQUEST_URI'], 'enter') == false) {
+        if (count(
+            array_filter(
+                $_SESSION['mainMenu'],
+                function ($element) {
+                    return $_SERVER['REQUEST_URI'] == $element['path'];
+                }
+            )
+        ) == 0) {
+            setcookie('errorGoTo', true, time() + 5, '/');
+            header('Location:' . $_SERVER["HTTP_X_FORWARDED_PROTO"] . '://' . $_SERVER["HTTP_HOST"]);
+        }
+    }
+}

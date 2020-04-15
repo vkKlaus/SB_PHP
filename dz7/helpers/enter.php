@@ -39,14 +39,21 @@ if (isset($_POST['login'])) {
                 ];
 
                 $_SESSION['admin'] = false;
+
                 foreach ($users as $item) {
-                    $group[$item['description']] = $item['group_id'];
                     if ($item['group_id'] == '999') {
                         $_SESSION['admin'] = true;
                     }
+                    if ($item['group_id'] == null) {
+                        $group['нет групп']  = 0;
+                    } else {
+                        $group[$item['description']] = $item['group_id'];
+                    }
                 }
 
+
                 $_SESSION['group'] = $group;
+
 
                 $menuPDO = selectMenu($pdo);
                 $mainMenu = [];

@@ -2,6 +2,7 @@
 
 session_start();
 
+
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/menu.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/littleHelper.php'; // подключаем формирование меню
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/page.php'; // подключаем формирование страницы
@@ -9,9 +10,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_db.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/helpers/pdo_query.php';
 
 
-if (isset($_SESSION['login'])) {
-    setcookie('login', $_SESSION['login'], 0, '/');
+
+if (!isAuth()) {
+    setcookie('login', $_SESSION['login'], 0, '/?sort=1');
+} else {
+    setcookie('login', '', -1, '/?sort=1');
 }
+
 
 $admin = false;
 
@@ -40,32 +45,6 @@ $roleCrSect = array_filter(
 );
 
 
-// if (isset($_SESSION['mainMenu']) && count($_SESSION['mainMenu']) > 1) {
-
-//     $mainMenu = $_SESSION['mainMenu'];
-// } else {
-//     $menuPDO = selectMenu($pdo);
-//     $mainMenu = [];
-
-//     foreach ($menuPDO as $item) {
-//         if (!isset($_SESSION['login']) && strpos($item['title'], 'Главная') !== 0) {
-//             continue;
-//         } elseif (
-//             (isset($_SESSION['admin']))
-//             && (!$_SESSION['admin'])
-//             && strpos($item['title'], 'Админ') !== 0
-//         ) {
-//             continue;
-//         } elseif (isset($_SESSION['login']) && strpos($item['title'], 'Профиль') !== false) {
-//             $item['title'] .= ' ' . $_SESSION['login'];
-//         } elseif (strpos($item['title'], 'Разделы') !== false && (!count($roleCrSect))) {
-//             continue;
-//         }
-//         array_push($mainMenu, $item);
-//     }
-//     $_SESSION['mainMenu'] = $mainMenu;
-// }
-
 $mainMenu = [];
 
 if (isset($_SESSION['mainMenu'])) {
@@ -85,17 +64,8 @@ if (isset($_SESSION['mainMenu'])) {
 }
 
 
-// while ($row = $stmt->fetch()) {
 
-//     if (isset($_SESSION['login']) && strpos($row['title'], 'Профиль') !== false) {
-//         $row['title'] .= ' ' . $_SESSION['login'];
-//     } elseif (strpos($row['title'], 'Разделы') !== false && (!count($role))) {
-//         continue;
-//     }
-
-//     array_push($mainMenu, $row);
-// }
-
+verifyRight();
 
 ?>
 
