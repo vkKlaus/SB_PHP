@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2020 г., 10:09
+-- Время создания: Апр 16 2020 г., 16:56
 -- Версия сервера: 8.0.15
 -- Версия PHP: 7.3.9
 
@@ -116,7 +116,7 @@ CREATE TABLE `main_menu` (
   `path` varchar(255) NOT NULL,
   `use_panel` tinyint(1) NOT NULL DEFAULT '0',
   `adm_panel` tinyint(1) NOT NULL DEFAULT '0',
-  `group_id` int(3) NOT NULL DEFAULT '0'
+  `group_id` int(3) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -124,16 +124,16 @@ CREATE TABLE `main_menu` (
 --
 
 INSERT INTO `main_menu` (`id`, `title`, `path`, `use_panel`, `adm_panel`, `group_id`) VALUES
-(1, 'Главная', '/', 1, 0, 0),
-(100, 'О нас', '/route/about/', 0, 0, 0),
-(200, 'Новости', '/route/news/', 0, 0, 0),
-(300, 'Каталог', '/route/catalog/', 0, 0, 0),
-(400, 'Контакты для связи', '/route/contact/', 0, 0, 0),
-(500, 'Галерея', '/route/images/', 0, 0, 0),
-(550, 'Сообщения', '/route/messages/', 1, 0, 0),
+(1, 'Главная', '/', 1, 0, 1),
+(100, 'О нас', '/route/about/', 0, 0, 1),
+(200, 'Новости', '/route/news/', 0, 0, 11111),
+(300, 'Каталог', '/route/catalog/', 0, 0, 1),
+(400, 'Контакты для связи', '/route/contact/', 0, 0, 1),
+(500, 'Галерея', '/route/images/', 0, 0, 1),
+(550, 'Сообщения', '/route/messages/', 1, 0, 1),
 (560, 'Отправить сообщение', '/route/msgOut/', 1, 0, 2),
 (570, 'Разделы', '/route/sections/', 1, 0, 3),
-(600, 'Профиль ', '/route/user/', 1, 0, 0),
+(600, 'Профиль ', '/route/user/', 1, 0, 1),
 (999, 'Админ', '/route/admin/', 1, 1, 999);
 
 -- --------------------------------------------------------
@@ -257,7 +257,13 @@ INSERT INTO `messages` (`id`, `title`, `section_id`, `text`, `user_id_sender`) V
 (99, '99 - Заголовок', 7, '99 - Какой то очень умный текст', 5),
 (100, '100 - Заголовок', 9, '100 - Какой то очень умный текст', 8),
 (101, 'новый заголовок', 4, ' Здесь есть сообщение', 1),
-(102, 'wf', 3, ' lllll', 2);
+(102, 'wf', 3, ' lllll', 2),
+(103, 'wfrwerwer', 2, ' uiuiuyi', 2),
+(104, 'hjkhj', 5, ' hkhjkhjkhk', 2),
+(105, 'erert', 5, ' dfgdfgdfg', 2),
+(106, 'erert', 5, ' dfgdfgdfg', 2),
+(107, 'erert', 5, ' dfgdfgdfg', 2),
+(108, 'erert', 5, ' dfgdfgdfg', 2);
 
 -- --------------------------------------------------------
 
@@ -562,7 +568,16 @@ INSERT INTO `message_recipient` (`message_id`, `recipient_user_id`) VALUES
 (102, 7),
 (102, 8),
 (102, 9),
-(102, 10);
+(102, 10),
+(108, 1),
+(108, 3),
+(108, 4),
+(108, 5),
+(108, 6),
+(108, 7),
+(108, 8),
+(108, 9),
+(108, 10);
 
 -- --------------------------------------------------------
 
@@ -598,7 +613,8 @@ INSERT INTO `sections` (`id`, `name`, `parent_id`, `user_id`, `color_id`) VALUES
 (12, 'и здесь не о чем', 11, 2, 3),
 (13, 'и опять не о чем', 12, 2, 2),
 (14, 'снова не о чем', 12, 2, 1),
-(15, 'еще раз не о чем', 11, 2, 1);
+(15, 'еще раз не о чем', 11, 2, 1),
+(16, 'ываыва', 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -630,7 +646,8 @@ INSERT INTO `users` (`id`, `user`, `email`, `phone`, `password`, `flag_email_not
 (7, 'us60', 'us6@6.dz7', '666 - 66 - 66', '$2y$10$cHlw1AB.Yw6f.CfEC/6Hsu2XdnYt0Eifz6iPaXt1lMa5L.XAL9Wbu', 1, 0),
 (8, 'us70', 'us7@7.dz7', '777 - 77 - 77', '$2y$10$q4YWJXXNcZfsGMMpfZ3LPexH.NZPAH0JUTHoM2KdLdIL/XCaRVa8q', 1, 0),
 (9, 'us80', 'us8@8.dz7', '888 - 88 - 88', '$2y$10$WENXkZe0sQNx5ui2oqJ.FegbTeAI9Qd21Nojs9V8Jd0dOgoO1JwJW', 1, 0),
-(10, 'us90', 'us9@9.dz7', '999 - 99 - 99', '$2y$10$4rA7.DqxjR4IJS.YKfxUiuPKT6v93dmg0jWybQbVKBj6ntMoMreU.', 1, 0);
+(10, 'us90', 'us9@9.dz7', '999 - 99 - 99', '$2y$10$4rA7.DqxjR4IJS.YKfxUiuPKT6v93dmg0jWybQbVKBj6ntMoMreU.', 1, 0),
+(11, '999', '999@999.dz7', '000-00-00', '$2y$10$N7irlIffhiVj9CsAzcP9jOnliI9nFDRDkVenhicWa6k0tMr6aB3jS', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -720,19 +737,19 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT для таблицы `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT для таблицы `sections`
 --
 ALTER TABLE `sections`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
